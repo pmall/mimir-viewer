@@ -17,7 +17,22 @@ type FingerprintData = {
 
 export default function FingerprintViewer({ data }: { data: FingerprintData }) {
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
+  const [selectedPos, setSelectedPos] = useState<number | null>(null);
   const [viewportDims, setViewportDims] = useState({ vh: 0 });
+
+  // Auto-scroll 1D view when selectedPos changes (e.g. from 3D click)
+  useEffect(() => {
+    if (selectedPos !== null) {
+      const colEl = document.getElementById(`col-${selectedPos}`);
+      if (colEl) {
+        colEl.scrollIntoView({
+          behavior: "smooth",
+          block: "nearest",
+          inline: "center",
+        });
+      }
+    }
+  }, [selectedPos]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -132,15 +147,22 @@ export default function FingerprintViewer({ data }: { data: FingerprintData }) {
               Math.min(smoothed_rsasa, 1.0) * rsasaMaxHt;
             const plddtHeight = (plddt / 100) * plddtMaxHt;
 
+            const pos = data.positions[i];
             const inOutClass = isMaskedIn ? "in" : "out";
-            const activeClass = hoveredIdx === i ? "active" : "";
+            const activeClass =
+              hoveredIdx === i || selectedPos === pos ? "active" : "";
 
             return (
-              <div key={i} className={`col ${inOutClass} ${activeClass}`}>
+              <div
+                key={i}
+                id={`col-${pos}`}
+                className={`col ${inOutClass} ${activeClass}`}
+              >
                 <div
                   className="hover-target"
                   onMouseEnter={() => setHoveredIdx(i)}
                   onMouseLeave={() => setHoveredIdx(null)}
+                  onClick={() => setSelectedPos(pos)}
                 ></div>
                 <div className="rsasa-cell">
                   <div
@@ -206,6 +228,8 @@ export default function FingerprintViewer({ data }: { data: FingerprintData }) {
         targetId={data.targetId}
         positions={data.positions}
         mask={data.mask}
+        selectedPos={selectedPos}
+        onPosSelect={setSelectedPos}
       />
     </div>
   );
