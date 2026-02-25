@@ -13,6 +13,7 @@
     "db:seed": "tsx src/db/seed.ts"
   },
   "dependencies": {
+    "3dmol": "^2.5.4",
     "csv-parse": "^6.1.0",
     "drizzle-orm": "^0.45.1",
     "next": "16.1.6",

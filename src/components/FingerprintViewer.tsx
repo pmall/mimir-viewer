@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import StructureViewer3D from "./StructureViewer3D";
 
 type FingerprintData = {
   targetId: string;
@@ -38,8 +39,8 @@ export default function FingerprintViewer({ data }: { data: FingerprintData }) {
       : "auto";
 
   return (
-    <div className="flex flex-col h-screen w-full bg-slate-900 text-slate-50 overflow-hidden font-sans">
-      <header className="px-5 py-4 bg-slate-800 border-b border-slate-700 flex justify-between items-center shrink-0">
+    <div className="flex flex-col h-screen w-full bg-slate-900 text-slate-50 overflow-y-auto overflow-x-hidden font-sans relative">
+      <header className="px-5 py-4 bg-slate-800 border-b border-slate-700 flex justify-between items-center shrink-0 sticky top-0 z-50">
         <div className="flex items-center gap-4">
           <Link
             href="/"
@@ -199,6 +200,13 @@ export default function FingerprintViewer({ data }: { data: FingerprintData }) {
           </div>
         </div>
       )}
+
+      {/* 3D Structure Viewer */}
+      <StructureViewer3D
+        targetId={data.targetId}
+        positions={data.positions}
+        mask={data.mask}
+      />
     </div>
   );
 }
