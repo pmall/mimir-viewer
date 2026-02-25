@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 
 type FingerprintData = {
   targetId: string;
@@ -39,13 +40,33 @@ export default function FingerprintViewer({ data }: { data: FingerprintData }) {
   return (
     <div className="flex flex-col h-screen w-full bg-slate-900 text-slate-50 overflow-hidden font-sans">
       <header className="px-5 py-4 bg-slate-800 border-b border-slate-700 flex justify-between items-center shrink-0">
-        <div>
-          <h1 className="text-xl m-0 text-slate-200">
-            Target Fingerprint: {data.targetId}
-          </h1>
-          <p className="subtitle text-slate-400 m-0 text-sm">
-            1D sequence track mapping.
-          </p>
+        <div className="flex items-center gap-4">
+          <Link
+            href="/"
+            className="flex items-center justify-center h-8 w-8 rounded-full bg-slate-700 hover:bg-slate-600 transition-colors text-slate-300 hover:text-white"
+            title="Back to Search"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              viewBox="0 0 16 16"
+            >
+              <path
+                fillRule="evenodd"
+                d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"
+              />
+            </svg>
+          </Link>
+          <div>
+            <h1 className="text-xl m-0 text-slate-200">
+              Target Fingerprint: {data.targetId}
+            </h1>
+            <p className="subtitle text-slate-400 m-0 text-sm">
+              1D sequence track mapping.
+            </p>
+          </div>
         </div>
 
         {/* Legend Panel */}
