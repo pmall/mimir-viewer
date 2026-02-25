@@ -2,7 +2,11 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import StructureViewer3D from "./StructureViewer3D";
+import dynamic from "next/dynamic";
+
+const StructureViewer3D = dynamic(() => import("./StructureViewer3D"), {
+  ssr: false,
+});
 
 type FingerprintData = {
   targetId: string;
