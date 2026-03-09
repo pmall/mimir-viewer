@@ -1,12 +1,11 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 // @ts-ignore
 import * as $3Dmol from "3dmol";
 
 interface StructureViewer3DProps {
   targetId: string;
-  positions: number[];
   mask: boolean[];
   selectedPos: number | null;
   onPosSelect: (pos: number) => void;
@@ -14,7 +13,6 @@ interface StructureViewer3DProps {
 
 export default function StructureViewer3D({
   targetId,
-  positions,
   mask,
   selectedPos,
   onPosSelect,
@@ -27,28 +25,32 @@ export default function StructureViewer3D({
   const [error, setError] = useState<string | null>(null);
 
   // Helper to color a residue based on mask and selected State
-  const applyStyles = (viewer: any, selPos: number | null) => {
-    const colorMap = new Map<number, string>();
-    for (let i = 0; i < positions.length; i++) {
-      colorMap.set(positions[i], mask[i] ? "#4ade80" : "#475569");
-    }
+  const applyStyles = useCallback(
+    (viewer: any, selPos: number | null) => {
+      const colorMap = new Map<number, string>();
+      for (let i = 0; i < mask.length; i++) {
+        const pos = i + 1;
+        colorMap.set(pos, mask[i] ? "#4ade80" : "#475569");
+      }
 
-    viewer.setStyle(
-      {},
-      {
-        sphere: {
-          colorfunc: (atom: any) => {
-            const resNum = parseInt(atom.resi, 10);
-            if (resNum === selPos) {
-              return "#fef08a"; // High visibility yellow for selected
-            }
-            return colorMap.get(resNum) || "#475569";
+      viewer.setStyle(
+        {},
+        {
+          sphere: {
+            colorfunc: (atom: any) => {
+              const resNum = parseInt(atom.resi, 10);
+              if (resNum === selPos) {
+                return "#fef08a"; // High visibility yellow for selected
+              }
+              return colorMap.get(resNum) || "#475569";
+            },
           },
         },
-      },
-    );
-    viewer.render();
-  };
+      );
+      viewer.render();
+    },
+    [mask],
+  );
 
   // 1. Initial Load Effect
   useEffect(() => {
@@ -96,12 +98,14 @@ export default function StructureViewer3D({
 
     loadStructure();
 
+    const currentViewerRef = viewerRef.current;
     return () => {
-      if (viewerRef.current) {
-        viewerRef.current.innerHTML = "";
+      if (currentViewerRef) {
+        currentViewerRef.innerHTML = "";
       }
       viewerInstanceRef.current = null;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoaded, targetId]);
 
   // 2. React to selectedPos changes
@@ -116,7 +120,7 @@ export default function StructureViewer3D({
         viewer.center({ resi: selectedPos.toString() }, 500);
       }
     }
-  }, [selectedPos, positions, mask]);
+  }, [selectedPos, mask, applyStyles]);
 
   if (!isLoaded) {
     return (

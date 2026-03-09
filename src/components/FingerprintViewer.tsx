@@ -11,7 +11,6 @@ const StructureViewer3D = dynamic(() => import("./StructureViewer3D"), {
 type FingerprintData = {
   targetId: string;
   sequence: string;
-  positions: number[];
   mask: boolean[];
   rsasa: number[];
   smoothedRsasa: number[];
@@ -151,7 +150,7 @@ export default function FingerprintViewer({ data }: { data: FingerprintData }) {
               Math.min(smoothed_rsasa, 1.0) * rsasaMaxHt;
             const plddtHeight = (plddt / 100) * plddtMaxHt;
 
-            const pos = data.positions[i];
+            const pos = i + 1;
             const inOutClass = isMaskedIn ? "in" : "out";
             const activeClass =
               hoveredIdx === i || selectedPos === pos ? "active" : "";
@@ -196,7 +195,7 @@ export default function FingerprintViewer({ data }: { data: FingerprintData }) {
         <div className="custom-tooltip visible">
           <h2>
             <span>
-              Pos <span>{data.positions[hoveredIdx]}</span>
+              Pos <span>{hoveredIdx + 1}</span>
             </span>
             <span>{data.sequence[hoveredIdx]}</span>
           </h2>
@@ -230,7 +229,6 @@ export default function FingerprintViewer({ data }: { data: FingerprintData }) {
       {/* 3D Structure Viewer */}
       <StructureViewer3D
         targetId={data.targetId}
-        positions={data.positions}
         mask={data.mask}
         selectedPos={selectedPos}
         onPosSelect={setSelectedPos}

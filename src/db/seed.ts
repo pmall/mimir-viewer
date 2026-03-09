@@ -9,6 +9,15 @@ const SEED_FILE = path.join(process.cwd(), "data", "viewer_data.csv");
 async function main() {
   console.log("1. Starting CSV parsing...");
 
+  console.log("2. Truncating existing table...");
+  try {
+    await db.delete(targetFingerprints);
+    console.log("Table truncated successfully.");
+  } catch (err: any) {
+    console.error("Error truncating table:", err.message);
+    process.exit(1);
+  }
+
   if (!fs.existsSync(SEED_FILE)) {
     throw new Error(`File not found: ${SEED_FILE}`);
   }
@@ -31,7 +40,6 @@ async function main() {
       const parsedRecord = {
         targetId: record.target_id,
         sequence: record.sequence,
-        positions: JSON.parse(record.positions || "[]"),
         mask: JSON.parse(record.mask || "[]"),
         rsasa: JSON.parse(record.rsasa || "[]"),
         smoothedRsasa: JSON.parse(record.smoothed_rsasa || "[]"),
