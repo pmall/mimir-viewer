@@ -22,8 +22,8 @@ export default async function Home() {
             Mímir Structure Viewer
           </h1>
           <p className="text-lg text-slate-400">
-            Explore the 1D structural fingerprints of nearly 20,000 human
-            proteins mapped with predicted characteristics from ESM-3.
+            Explore 1D structural fingerprints of the human proteome, generated
+            from AlphaFold 2 structures.
           </p>
         </div>
 
